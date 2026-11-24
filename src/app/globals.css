@@ -1,26 +1,128 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --night: #07080a;
+  --ink: #12151b;
+  --chrome: #e7ebf0;
+  --navy: #202847;
+  --paper: #f4f6f8;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+html { scroll-behavior: auto; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: var(--night);
+  color: var(--chrome);
+  font-family: var(--font-sans), "Segoe UI", sans-serif;
+}
+
+::selection { background: #c5ced8; color: #07080a; }
+
+.mark, .mark-foot { mix-blend-mode: screen; width: auto; }
+.mark { height: 92px; }
+.mark-foot { height: 72px; }
+
+.display {
+  font-family: var(--font-display), Impact, sans-serif;
+  letter-spacing: -0.045em;
+  line-height: 0.88;
+  font-weight: 600;
+}
+
+.tech {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.frame {
+  position: relative;
+}
+.frame::before,
+.frame::after {
+  content: "";
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-color: rgba(231, 235, 240, 0.55);
+  border-style: solid;
+  pointer-events: none;
+}
+.frame::before { top: 18px; left: 18px; border-width: 1px 0 0 1px; }
+.frame::after { right: 18px; bottom: 18px; border-width: 0 1px 1px 0; }
+
+.marquee { overflow: hidden; border-block: 1px solid rgba(255,255,255,0.12); }
+.marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 3rem;
+  padding: 0.95rem 0;
+  animation: slide 36s linear infinite;
+}
+.marquee:hover .marquee-track { animation-play-state: paused; }
+@keyframes slide { to { transform: translateX(-50%); } }
+
+.rise {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.rise.in { opacity: 1; transform: none; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), background 0.45s cubic-bezier(0.22, 1, 0.36, 1), color 0.45s ease, border-color 0.45s ease;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: translateY(0); }
+
+.link-line {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0 1px;
+  transition: background-size 0.45s cubic-bezier(0.22, 1, 0.36, 1), color 0.3s ease;
+}
+.link-line:hover { background-size: 100% 1px; }
+
+.soft-in { animation: soften 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+@keyframes soften { from { opacity: 0.35; } to { opacity: 1; } }
+
+.cursor-ring {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 80;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border: 1.5px solid #12151b;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.95);
+  pointer-events: none;
+  transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1), height 0.35s cubic-bezier(0.22, 1, 0.36, 1), margin 0.35s cubic-bezier(0.22, 1, 0.36, 1), background 0.35s ease;
+}
+.cursor-ring.is-hot {
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  background: rgba(18, 21, 27, 0.08);
+  box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.95);
+}
+@media (pointer: fine) {
+  html.has-cursor .cursor-ring { display: block; }
+  html.has-cursor, html.has-cursor body, html.has-cursor a, html.has-cursor button { cursor: none; }
+  html.has-cursor input, html.has-cursor textarea, html.has-cursor select { cursor: text; }
+}
+
+@media (max-width: 767px) {
+  .mark { height: 64px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track, .rise, .btn, .soft-in { animation: none; transition: none; }
+  .rise { opacity: 1; transform: none; }
 }
